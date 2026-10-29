@@ -17,9 +17,9 @@ class DetailViewModel(
     fun loadStudent(id: Int) {
         val student = repository.getStudentById(id)
         uiState = if (student != null) {
-            DetailUiState(student = student)
+            DetailUiState(student = student, requestedId = id)
         } else {
-            DetailUiState(errorMessage = "Student tidak ditemukan")
+            DetailUiState(errorMessage = "Student tidak ditemukan", requestedId = id)
         }
     }
 
