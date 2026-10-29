@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import com.example.praktikum5_navigationcompose_245150200111040.data.repository.DefaultStudentRepository
 import com.example.praktikum5_navigationcompose_245150200111040.data.source.StudentLocalDataSource
 import com.example.praktikum5_navigationcompose_245150200111040.ui.detail.DetailViewModel
+import com.example.praktikum5_navigationcompose_245150200111040.ui.home.HomeViewModel
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.AboutScreen
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.DetailScreen
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.HomeScreen
@@ -29,7 +30,12 @@ fun NavigationLabApp() {
         startDestination = Routes.HOME
     ) {
         composable(Routes.HOME) {
+            val homeViewModel: HomeViewModel = viewModel(
+                factory = HomeViewModel.factory(repository)
+            )
+
             HomeScreen(
+                uiState = homeViewModel.uiState,
                 onOpenDetail = { id ->
                     navController.navigate(Routes.detail(id))
                 },
