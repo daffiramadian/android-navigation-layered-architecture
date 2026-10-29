@@ -31,7 +31,7 @@ import com.example.praktikum5_navigationcompose_245150200111040.model.sampleStud
 
 @Composable
 fun HomeScreen(
-    onOpenDetail: (String) -> Unit,
+    onOpenDetail: (Int) -> Unit,
     onOpenProfile: () -> Unit,
     onOpenAbout: () -> Unit
 ) {
@@ -83,11 +83,11 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(
-                    onClick = { onOpenDetail(sampleStudent.nim) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp)
-                ) {
+Button(
+    onClick = { onOpenDetail(2026) },
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(14.dp)
+) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,

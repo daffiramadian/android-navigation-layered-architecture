@@ -6,5 +6,5 @@ object Routes {
     const val ABOUT = "about"
     const val DETAIL = "detail/{studentId}"
 
-    fun detail(studentId: String): String = "detail/$studentId"
+    fun detail(studentId: Int): String = "detail/$studentId"
 }

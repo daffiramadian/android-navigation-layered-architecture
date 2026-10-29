@@ -1,11 +1,17 @@
 package com.example.praktikum5_navigationcompose_245150200111040
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.praktikum5_navigationcompose_245150200111040.data.repository.DefaultStudentRepository
+import com.example.praktikum5_navigationcompose_245150200111040.data.source.StudentLocalDataSource
+import com.example.praktikum5_navigationcompose_245150200111040.ui.detail.DetailViewModel
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.AboutScreen
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.DetailScreen
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.HomeScreen
@@ -13,6 +19,9 @@ import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.Profil
 
 @Composable
 fun NavigationLabApp() {
+    val dataSource = remember { StudentLocalDataSource() }
+    val repository = remember { DefaultStudentRepository(dataSource) }
+
     val navController = rememberNavController()
 
     NavHost(
@@ -37,16 +46,23 @@ fun NavigationLabApp() {
             route = Routes.DETAIL,
             arguments = listOf(
                 navArgument("studentId") {
-                    type = NavType.StringType
+                    type = NavType.IntType
                 }
             )
         ) { backStackEntry ->
-            val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
+            val studentId = backStackEntry.arguments?.getInt("studentId") ?: -1
+
+            val viewModel: DetailViewModel = viewModel(
+                factory = DetailViewModel.factory(repository)
+            )
+
+            LaunchedEffect(studentId) {
+                viewModel.loadStudent(studentId)
+            }
 
             DetailScreen(
-                studentId = studentId,
-                onBack = { navController.popBackStack() },
-                onOpenProfile = { navController.navigate(Routes.PROFILE) }
+                uiState = viewModel.uiState,
+                onBack = { navController.popBackStack() }
             )
         }
 
