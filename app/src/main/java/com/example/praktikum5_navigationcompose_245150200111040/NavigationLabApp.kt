@@ -9,8 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.praktikum5_navigationcompose_245150200111040.data.remote.RetrofitClient
+import com.example.praktikum5_navigationcompose_245150200111040.data.remote.StudentRemoteDataSource
 import com.example.praktikum5_navigationcompose_245150200111040.data.repository.DefaultStudentRepository
-import com.example.praktikum5_navigationcompose_245150200111040.data.source.StudentLocalDataSource
 import com.example.praktikum5_navigationcompose_245150200111040.ui.detail.DetailViewModel
 import com.example.praktikum5_navigationcompose_245150200111040.ui.home.HomeViewModel
 import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.AboutScreen
@@ -20,8 +21,12 @@ import com.example.praktikum5_navigationcompose_245150200111040.ui.screen.Profil
 
 @Composable
 fun NavigationLabApp() {
-    val dataSource = remember { StudentLocalDataSource() }
-    val repository = remember { DefaultStudentRepository(dataSource) }
+    val remoteDataSource = remember {
+        StudentRemoteDataSource(RetrofitClient.apiService)
+    }
+    val repository = remember {
+        DefaultStudentRepository(remoteDataSource)
+    }
 
     val navController = rememberNavController()
 
@@ -36,7 +41,7 @@ fun NavigationLabApp() {
 
             HomeScreen(
                 uiState = homeViewModel.uiState,
-                onOpenDetail = { id ->
+                onStudentClick = { id ->
                     navController.navigate(Routes.detail(id))
                 },
                 onOpenProfile = {
@@ -44,7 +49,8 @@ fun NavigationLabApp() {
                 },
                 onOpenAbout = {
                     navController.navigate(Routes.ABOUT)
-                }
+                },
+                onRetry = homeViewModel::loadStudents
             )
         }
 

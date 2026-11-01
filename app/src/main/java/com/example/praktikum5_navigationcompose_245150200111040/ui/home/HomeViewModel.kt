@@ -19,8 +19,19 @@ class HomeViewModel(
     }
 
     fun loadStudents() {
-        val students = repository.getStudents()
-        uiState = HomeUiState(students = students)
+        uiState = uiState.copy(isLoading = true, errorMessage = null)
+
+        repository.getStudents { result ->
+            result
+                .onSuccess { data ->
+                    uiState = HomeUiState(students = data)
+                }
+                .onFailure { error ->
+                    uiState = HomeUiState(
+                        errorMessage = error.message ?: "Gagal mengambil data"
+                    )
+                }
+        }
     }
 
     companion object {
