@@ -24,11 +24,41 @@ class HomeViewModel(
         repository.getStudents { result ->
             result
                 .onSuccess { data ->
-                    uiState = HomeUiState(students = data)
+                    uiState = uiState.copy(students = data, isLoading = false, errorMessage = null)
                 }
                 .onFailure { error ->
-                    uiState = HomeUiState(
-                        errorMessage = error.message ?: "Gagal mengambil data"
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        errorMessage = error.message ?: "Gagal mengambil data",
+                        students = emptyList()
+                    )
+                }
+        }
+    }
+
+    fun onSearchQueryChange(query: String) {
+        uiState = uiState.copy(searchQuery = query)
+    }
+
+    fun search() {
+        val query = uiState.searchQuery.trim()
+        if (query.isEmpty()) {
+            loadStudents()
+            return
+        }
+
+        uiState = uiState.copy(isLoading = true, errorMessage = null)
+
+        repository.searchStudents(query) { result ->
+            result
+                .onSuccess { data ->
+                    uiState = uiState.copy(students = data, isLoading = false, errorMessage = null)
+                }
+                .onFailure { error ->
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        errorMessage = error.message ?: "Pencarian gagal",
+                        students = emptyList()
                     )
                 }
         }
